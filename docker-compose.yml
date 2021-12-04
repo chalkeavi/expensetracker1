@@ -1,0 +1,40 @@
+version: '3.7'
+services:
+  expensetracker:
+    #image: in28min/todo-front-end:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      HOSTNAME : mysql      
+    depends_on: # Start the depends_on first
+      - mysql 
+    networks:
+      - expense-tracker-application-network
+
+  
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE : expense
+      MYSQL_ROOT_PASSWORD : admin      
+      MYSQL_USER: test
+      MYSQL_PASSWORD : test
+      
+    networks:
+      - expense-tracker-application-network
+    volumes:
+      - expense-tracker-data-volume:/var/lib/mysql
+ 
+volumes:
+  expense-tracker-data-volume:
+   
+# Networks to be created to facilitate communication between containers
+networks:
+  expense-tracker-application-network:
